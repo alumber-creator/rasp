@@ -20,12 +20,16 @@ try:
         # Check if data is available to read
         if ser.in_waiting > 0:
             # Read a line from serial (until newline character)
-            line = ser.readline().decode('utf-8').rstrip()
-            print(f"Received data: {line}")
+            raw_line = ser.readline()
+            try:
+                # Try to decode with UTF-8, replacing invalid characters
+                line = raw_line.decode('utf-8', errors='replace').rstrip()
+                print(f"Received data: {line}")
+            except Exception as e:
+                # If that still fails, print the raw bytes
+                print(f"Received raw bytes: {raw_line}")
             
-            # You can process the data here as needed
-            
-        time.sleep(0.05)  # Small delay to prevent CPU hogging
+        time.sleep(0.1)  # Small delay to prevent CPU hogging
         
 except KeyboardInterrupt:
     print("Program terminated by user")
